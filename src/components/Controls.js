@@ -1,33 +1,51 @@
 import React from 'react';
 
-// Functional component using destructuring for the onMove prop [5, 6]
-const Controls = ({ onMove }) => {
+const Controls = ({ gameData, onAction }) => {
   const directions = ['UP', 'DOWN', 'LEFT', 'RIGHT'];
+
+  const isMoveAvailable = (direction) => {
+    return gameData.available_actions?.some(
+      action => action.type === 'MOVE' && action.direction === direction
+    );
+  };
+
+  const handleTeleport = (target) => {
+    onAction({
+      type: 'TELEPORT',
+      destination: target,
+    });
+  };
 
   return (
     <div className="controls-container">
-      <h3>Navigate the Upside Down</h3>
+      <h3>Current Turn: {gameData.current_turn}</h3>
+
       <div className="button-grid">
-        {/* Mapping an array to JSX elements for cleaner code [7] */}
         {directions.map((dir) => (
-          <button 
-            key={dir} 
-            className={`btn-${dir.toLowerCase()}`}
-            onClick={() => onMove(dir)} // Sending interactions back up the tree [4, 8]
+          <button
+            key={dir}
+            disabled={!isMoveAvailable(dir) || gameData.is_over}
+            onClick={() => onAction({ type: 'MOVE', direction: dir })}
           >
             {dir}
           </button>
         ))}
       </div>
-      
-      {/* Teleportation Actuator - Requires 'hidden powers' in state [Requirement] */}
+
       <div className="special-actions">
-        <button 
-          className="btn-teleport"
-          onClick={() => onMove('TELEPORT')}
-        >
-          Use Hidden Powers
-        </button>
+        <h4>Teleport</h4>
+
+        {!gameData.can_teleport && <p>No teleport available.</p>}
+
+        {gameData.can_teleport && gameData.teleport_targets?.map((target) => (
+          <button
+            key={`${target[0]}-${target[1]}`}
+            disabled={gameData.is_over}
+            onClick={() => handleTeleport(target)}
+          >
+            Teleport to ({target[0]}, {target[1]})
+          </button>
+        ))}
       </div>
     </div>
   );

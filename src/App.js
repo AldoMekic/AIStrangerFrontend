@@ -3,47 +3,96 @@ import GameSetup from './components/GameSetup';
 import GameGrid from './components/GameGrid';
 import Controls from './components/Controls';
 
+const API_BASE = 'http://127.0.0.1:8000/api';
+
 function App() {
   const [gameData, setGameData] = useState(null);
+  const [error, setError] = useState('');
 
-  // ACTUATOR: Connects to backend POST /api/games/ to initialize the world
-  const createNewGame = (config) => {
-    fetch('http://127.0.0.1:8000/api/games/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(config)
-    })
-    .then(res => res.json())
-    .then(initialState => {
-      // Upon success, the backend returns the Initial State (S0)
-      setGameData(initialState);
-    })
-    .catch(console.error);
+  const createNewGame = async (config) => {
+    setError('');
+
+    try {
+      const res = await fetch(`${API_BASE}/games/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(config),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Failed to create game.');
+        return;
+      }
+
+      setGameData(data);
+    } catch (err) {
+      setError('Backend connection failed.');
+      console.error(err);
+    }
   };
 
-  const handleMove = (direction) => {
-    // Current 'play_turn' logic using the ID from the created game
-    fetch(`http://127.0.0.1:8000/api/games/${gameData.id}/play_turn/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'MOVE', direction: direction })
-    })
-    .then(res => res.json())
-    .then(updatedState => setGameData(updatedState));
+  const playTurn = async (action) => {
+    if (!gameData || gameData.is_over) return;
+
+    setError('');
+
+    try {
+      const res = await fetch(`${API_BASE}/games/${gameData.id}/play_turn/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(action),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Invalid action.');
+        return;
+      }
+
+      setGameData(data);
+    } catch (err) {
+      setError('Backend connection failed.');
+      console.error(err);
+    }
   };
 
   return (
     <div className="App">
       <h1>Stranger Things: AI Escape</h1>
-      
-      {/* Conditional Rendering: Showing Setup if no game is active [4] */}
+
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+
       {!gameData ? (
         <GameSetup onStartGame={createNewGame} />
       ) : (
         <>
           <GameGrid data={gameData} />
-          <Controls onMove={handleMove} />
-          {gameData.is_over && <h2>Game Over!</h2>}
+
+          <Controls
+            gameData={gameData}
+            onAction={playTurn}
+          />
+
+          {gameData.last_event && (
+            <div>
+              <h3>Last Event</h3>
+              <p>
+                {gameData.last_event.actor} used {gameData.last_event.action_type}
+                {' '}from {JSON.stringify(gameData.last_event.from)}
+                {' '}to {JSON.stringify(gameData.last_event.to)}
+              </p>
+              {gameData.last_event.trap_triggered && <p>Trap triggered!</p>}
+              {gameData.last_event.end_reason && <p>End reason: {gameData.last_event.end_reason}</p>}
+            </div>
+          )}
+
+          {gameData.is_over && (
+            <h2>Game Over! Winner: {gameData.winner}</h2>
+          )}
+
           <button onClick={() => setGameData(null)}>New Game</button>
         </>
       )}
