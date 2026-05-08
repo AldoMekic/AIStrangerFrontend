@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GameSetup from './components/GameSetup';
 import GameGrid from './components/GameGrid';
 import Controls from './components/Controls';
@@ -9,6 +9,7 @@ function App() {
   const [gameData, setGameData] = useState(null);
   const [error, setError] = useState('');
   const [hoveredTeleportTarget, setHoveredTeleportTarget] = useState(null);
+  const [hoveredMoveTarget, setHoveredMoveTarget] = useState(null);
 
   const createNewGame = async (config) => {
     setError('');
@@ -54,12 +55,59 @@ function App() {
       }
 
       setHoveredTeleportTarget(null);
+      setHoveredMoveTarget(null);
       setGameData(data);
     } catch (err) {
       setError('Backend connection failed.');
       console.error(err);
     }
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (!gameData || gameData.is_over) return;
+
+      let direction = null;
+
+    switch (event.key) {
+      case 'ArrowUp':
+        direction = 'UP';
+        break;
+      case 'ArrowDown':
+        direction = 'DOWN';
+        break;
+      case 'ArrowLeft':
+        direction = 'LEFT';
+        break;
+      case 'ArrowRight':
+        direction = 'RIGHT';
+        break;
+      default:
+        return;
+    }
+
+    event.preventDefault();
+
+    const isLegalMove = gameData.available_actions?.some(
+      action =>
+        action.type === 'MOVE' &&
+        action.direction === direction
+    );
+
+    if (!isLegalMove) return;
+
+    playTurn({
+      type: 'MOVE',
+      direction,
+    });
+  };
+
+  window.addEventListener('keydown', handleKeyDown);
+
+  return () => {
+    window.removeEventListener('keydown', handleKeyDown);
+  };
+}, [gameData]);
 
   return (
     <div className="App">
@@ -78,12 +126,13 @@ function App() {
   <p>Goal: ({gameData.goal_position[0]}, {gameData.goal_position[1]})</p>
 </div>
 
-          <GameGrid data={gameData} hoveredTeleportTarget={hoveredTeleportTarget} />
+          <GameGrid data={gameData} hoveredTeleportTarget={hoveredTeleportTarget} hoveredMoveTarget={hoveredMoveTarget}/>
 
           <Controls
             gameData={gameData}
             onAction={playTurn}
             onTeleportHover = {setHoveredTeleportTarget}
+            onMoveHover = {setHoveredMoveTarget}
           />
 
           {gameData.last_event && (

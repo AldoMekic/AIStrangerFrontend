@@ -103,3 +103,15 @@ button:disabled {
   border-color: #ff4d4d;
   box-shadow: 0 0 12px #ff4d4d;
 }
+
+.eleven-move-hover-cell {
+  background-color: #ffd6eb;
+  border-color: #ff69b4;
+  box-shadow: 0 0 12px #ff69b4;
+}
+
+.max-move-hover-cell {
+  background-color: #fff7b3;
+  border-color: #ffd700;
+  box-shadow: 0 0 12px #ffd700;
+}

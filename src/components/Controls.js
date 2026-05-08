@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Controls = ({ gameData, onAction, onTeleportHover }) => {
+const Controls = ({ gameData, onAction, onTeleportHover, onMoveHover }) => {
   const directions = ['UP', 'DOWN', 'LEFT', 'RIGHT'];
 
   const isMoveAvailable = (direction) => {
@@ -8,6 +8,36 @@ const Controls = ({ gameData, onAction, onTeleportHover }) => {
       action => action.type === 'MOVE' && action.direction === direction
     );
   };
+
+  const getMoveTarget = (direction) => {
+  const currentPlayer = gameData.characters.find(
+    c => c.name === gameData.current_turn
+  );
+
+  if (!currentPlayer) return null;
+
+  let x = currentPlayer.x_pos;
+  let y = currentPlayer.y_pos;
+
+  switch (direction) {
+    case 'UP':
+      y -= 1;
+      break;
+    case 'DOWN':
+      y += 1;
+      break;
+    case 'LEFT':
+      x -= 1;
+      break;
+    case 'RIGHT':
+      x += 1;
+      break;
+    default:
+      break;
+  }
+
+  return [x, y];
+};
 
   const handleTeleport = (target) => {
     onAction({
@@ -25,6 +55,8 @@ const Controls = ({ gameData, onAction, onTeleportHover }) => {
           <button
             key={dir}
             disabled={!isMoveAvailable(dir) || gameData.is_over}
+            onMouseEnter={() => onMoveHover(getMoveTarget(dir))}
+            onMouseLeave={() => onMoveHover(null)}
             onClick={() => onAction({ type: 'MOVE', direction: dir })}
           >
             {dir}

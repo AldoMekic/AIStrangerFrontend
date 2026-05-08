@@ -1,8 +1,9 @@
 import React from 'react';
 import './GameGrid.css';
 
-const GameGrid = ({ data, hoveredTeleportTarget }) => {
+const GameGrid = ({ data, hoveredTeleportTarget, hoveredMoveTarget }) => {
   const { grid_size, characters, obstacles, goal_position } = data;
+  const currentTurn = data.current_turn;
 
   const getCharacterClass = (name) => {
     if (name === 'ELEVEN') return 'character eleven';
@@ -19,9 +20,11 @@ const GameGrid = ({ data, hoveredTeleportTarget }) => {
         const hazard = obstacles.find(o => o.x_pos === x && o.y_pos === y);
         const isGoal = goal_position?.[0] === x && goal_position?.[1] === y;
         const isHoveredTeleportTarget = hoveredTeleportTarget?.[0] === x && hoveredTeleportTarget?.[1] === y;
+        const isHoveredMoveTarget = hoveredMoveTarget?.[0] === x && hoveredMoveTarget?.[1] === y;
 
         cells.push(
-          <div key={`${x}-${y}`} className={`grid-cell ${isGoal ? 'goal-cell' : ''}  ${isHoveredTeleportTarget ? 'teleport-hover-cell' : ''}`}>
+          <div key={`${x}-${y}`} className={`grid-cell ${isGoal ? 'goal-cell' : ''}  ${isHoveredTeleportTarget ? 'teleport-hover-cell' : ''} ${isHoveredMoveTarget ? currentTurn === 'MAX' ? 'max-move-hover-cell' : 'eleven-move-hover-cell' : ''
+  }`}>
             {isGoal && <span className="goal">EXIT</span>}
             {occupant && <span className={getCharacterClass(occupant.name)}>{occupant.name}</span>}
             {hazard && <span className={`hazard ${hazard.obstacle_type.toLowerCase()}`}>{hazard.obstacle_type}</span>}
