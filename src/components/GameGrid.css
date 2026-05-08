@@ -97,3 +97,9 @@ button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+.teleport-hover-cell {
+  background-color: #ffb3b3;
+  border-color: #ff4d4d;
+  box-shadow: 0 0 12px #ff4d4d;
+}

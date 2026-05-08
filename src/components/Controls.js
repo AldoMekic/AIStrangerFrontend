@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Controls = ({ gameData, onAction }) => {
+const Controls = ({ gameData, onAction, onTeleportHover }) => {
   const directions = ['UP', 'DOWN', 'LEFT', 'RIGHT'];
 
   const isMoveAvailable = (direction) => {
@@ -41,6 +41,8 @@ const Controls = ({ gameData, onAction }) => {
           <button
             key={`${target[0]}-${target[1]}`}
             disabled={gameData.is_over}
+            onMouseEnter={() => onTeleportHover(target)}
+            onMouseLeave={() => onTeleportHover(null)}
             onClick={() => handleTeleport(target)}
           >
             Teleport to ({target[0]}, {target[1]})

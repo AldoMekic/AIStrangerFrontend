@@ -1,7 +1,7 @@
 import React from 'react';
 import './GameGrid.css';
 
-const GameGrid = ({ data }) => {
+const GameGrid = ({ data, hoveredTeleportTarget }) => {
   const { grid_size, characters, obstacles, goal_position } = data;
 
   const getCharacterClass = (name) => {
@@ -18,9 +18,10 @@ const GameGrid = ({ data }) => {
         const occupant = characters.find(c => c.x_pos === x && c.y_pos === y);
         const hazard = obstacles.find(o => o.x_pos === x && o.y_pos === y);
         const isGoal = goal_position?.[0] === x && goal_position?.[1] === y;
+        const isHoveredTeleportTarget = hoveredTeleportTarget?.[0] === x && hoveredTeleportTarget?.[1] === y;
 
         cells.push(
-          <div key={`${x}-${y}`} className={`grid-cell ${isGoal ? 'goal-cell' : ''}`}>
+          <div key={`${x}-${y}`} className={`grid-cell ${isGoal ? 'goal-cell' : ''}  ${isHoveredTeleportTarget ? 'teleport-hover-cell' : ''}`}>
             {isGoal && <span className="goal">EXIT</span>}
             {occupant && <span className={getCharacterClass(occupant.name)}>{occupant.name}</span>}
             {hazard && <span className={`hazard ${hazard.obstacle_type.toLowerCase()}`}>{hazard.obstacle_type}</span>}

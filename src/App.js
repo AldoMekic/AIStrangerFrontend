@@ -8,6 +8,7 @@ const API_BASE = 'http://127.0.0.1:8000/api';
 function App() {
   const [gameData, setGameData] = useState(null);
   const [error, setError] = useState('');
+  const [hoveredTeleportTarget, setHoveredTeleportTarget] = useState(null);
 
   const createNewGame = async (config) => {
     setError('');
@@ -52,6 +53,7 @@ function App() {
         return;
       }
 
+      setHoveredTeleportTarget(null);
       setGameData(data);
     } catch (err) {
       setError('Backend connection failed.');
@@ -69,11 +71,19 @@ function App() {
         <GameSetup onStartGame={createNewGame} />
       ) : (
         <>
-          <GameGrid data={gameData} />
+          <div>
+  <p>Mode: {gameData.game_mode}</p>
+  <p>Difficulty: {gameData.difficulty_level}</p>
+  <p>Current Turn: {gameData.current_turn}</p>
+  <p>Goal: ({gameData.goal_position[0]}, {gameData.goal_position[1]})</p>
+</div>
+
+          <GameGrid data={gameData} hoveredTeleportTarget={hoveredTeleportTarget} />
 
           <Controls
             gameData={gameData}
             onAction={playTurn}
+            onTeleportHover = {setHoveredTeleportTarget}
           />
 
           {gameData.last_event && (
