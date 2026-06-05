@@ -91,6 +91,8 @@ button {
   padding: 8px 12px;
   margin: 4px;
   cursor: pointer;
+  background-color: red;
+  border-radius: 12px;
 }
 
 button:disabled {

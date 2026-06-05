@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import "./GameSetup.css";
 
 const GameSetup = ({ onStartGame }) => {
   const [gridSize, setGridSize] = useState(5);

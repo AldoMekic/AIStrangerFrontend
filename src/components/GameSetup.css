@@ -1,0 +1,32 @@
+.setup-container {
+    background-color: black;
+    color: red;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-group {
+    color: red;
+    border: 1px solid red;
+    margin: auto;
+    width: 250px;
+    height: 60px;
+}
+
+body {
+    background-color: black;
+    color: red;
+}
+
+.form-group select {
+    background-color: red;
+    color: black;
+    border-radius: 12px;
+}
+
+.setup-container button {
+    background-color: red;
+    border-radius: 12px;
+}
