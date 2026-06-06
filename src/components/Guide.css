@@ -1,0 +1,12 @@
+.guide-container {
+    border: 3px solid red;
+    display: flex;
+    flex-direction: column;
+}
+
+.guide-group {
+    border: 1px solid red;
+    margin: auto;
+    height: 150px;
+    width: 550px;
+}

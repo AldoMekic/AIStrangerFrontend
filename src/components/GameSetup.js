@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import "./GameSetup.css";
+import Navbar from './Navbar';
 
-const GameSetup = ({ onStartGame }) => {
+const GameSetup = ({ onStartGame, onNavigate }) => {
   const [gridSize, setGridSize] = useState(5);
   const [difficulty, setDifficulty] = useState(1);
   const [gameMode, setGameMode] = useState('PVA');
@@ -18,6 +19,8 @@ const GameSetup = ({ onStartGame }) => {
 
   return (
     <div className="setup-container">
+      <Navbar currentPage="game" onNavigate={onNavigate} />
+
       <h2>Choose Your Escape</h2>
 
       <form onSubmit={handleSubmit}>
