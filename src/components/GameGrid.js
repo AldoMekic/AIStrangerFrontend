@@ -12,12 +12,6 @@ const GameGrid = ({ data, hoveredTeleportTarget, hoveredMoveTarget }) => {
   const { grid_size, characters, obstacles, goal_position } = data;
   const currentTurn = data.current_turn;
 
-  const getCharacterClass = (name) => {
-    if (name === 'ELEVEN') return 'character eleven';
-    if (name === 'MAX') return 'character max';
-    return 'character monster';
-  };
-
   const getObstacleImage = (type) => {
   switch (type) {
     case 'VEIN':

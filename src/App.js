@@ -5,7 +5,7 @@ import Controls from './components/Controls';
 import Guide from './components/Guide';
 import Navbar from './components/Navbar';
 
-const API_BASE = 'http://127.0.0.1:8000/api';
+const API_BASE = 'https://aistrangerbackend.onrender.com/api';
 
 function App() {
   const [gameData, setGameData] = useState(null);
