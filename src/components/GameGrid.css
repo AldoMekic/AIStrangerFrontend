@@ -117,3 +117,18 @@ button:disabled {
   border-color: #ffd700;
   box-shadow: 0 0 12px #ffd700;
 }
+
+.character-image {
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
+  z-index: 10;
+}
+
+.obstacle-image {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  position: absolute;
+  z-index: 5;
+}

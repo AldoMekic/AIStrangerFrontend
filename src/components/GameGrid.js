@@ -1,5 +1,12 @@
 import React from 'react';
 import './GameGrid.css';
+import elevenImg from '../images/eleven.jpg';
+import maxImg from '../images/max.jpg';
+import demogorgonImg from '../images/demogorgon.jpg';
+import shadowmonsterImg from '../images/shadowmonster.jpg';
+import mindflayerImg from '../images/mindflayer.jpg';
+import veinImg from '../images/veins.jpg';
+import trapImg from '../images/trap.jpg';
 
 const GameGrid = ({ data, hoveredTeleportTarget, hoveredMoveTarget }) => {
   const { grid_size, characters, obstacles, goal_position } = data;
@@ -10,6 +17,34 @@ const GameGrid = ({ data, hoveredTeleportTarget, hoveredMoveTarget }) => {
     if (name === 'MAX') return 'character max';
     return 'character monster';
   };
+
+  const getObstacleImage = (type) => {
+  switch (type) {
+    case 'VEIN':
+      return veinImg;
+    case 'TRAP':
+      return trapImg;
+    default:
+      return null;
+  }
+};
+
+const getCharacterImage = (name) => {
+  switch (name) {
+    case 'ELEVEN':
+      return elevenImg;
+    case 'MAX':
+      return maxImg;
+    case 'DEMOGORGON':
+      return demogorgonImg;
+    case 'SHADOWMONSTER':
+      return shadowmonsterImg;
+    case 'MINDFLAYER':
+      return mindflayerImg;
+    default:
+      return null;
+  }
+};
 
   const renderCells = () => {
     const cells = [];
@@ -26,8 +61,16 @@ const GameGrid = ({ data, hoveredTeleportTarget, hoveredMoveTarget }) => {
           <div key={`${x}-${y}`} className={`grid-cell ${isGoal ? 'goal-cell' : ''}  ${isHoveredTeleportTarget ? 'teleport-hover-cell' : ''} ${isHoveredMoveTarget ? currentTurn === 'MAX' ? 'max-move-hover-cell' : 'eleven-move-hover-cell' : ''
   }`}>
             {isGoal && <span className="goal">EXIT</span>}
-            {occupant && <span className={getCharacterClass(occupant.name)}>{occupant.name}</span>}
-            {hazard && <span className={`hazard ${hazard.obstacle_type.toLowerCase()}`}>{hazard.obstacle_type}</span>}
+            {occupant && <img
+      src={getCharacterImage(occupant.name)}
+      alt={occupant.name}
+      className="character-image"
+    />}
+            {hazard && <img
+      src={getObstacleImage(hazard.obstacle_type)}
+      alt={hazard.obstacle_type}
+      className="obstacle-image"
+    />}
           </div>
         );
       }
@@ -35,6 +78,8 @@ const GameGrid = ({ data, hoveredTeleportTarget, hoveredMoveTarget }) => {
 
     return cells;
   };
+
+  
 
   return (
     <div
